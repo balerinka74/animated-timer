@@ -19,6 +19,7 @@ const CountdownTimer = () => {
     return `${m}:${s}`;
   };
 
+  // Запуск таймера
   const startTimer = () => {
     if (isRunning) return;
     setIsRunning(true);
@@ -34,6 +35,7 @@ const CountdownTimer = () => {
     }, 1000);
   };
 
+  // Сброс таймера
   const resetTimer = () => {
     clearInterval(timerRef.current);
     setIsRunning(false);
@@ -42,37 +44,37 @@ const CountdownTimer = () => {
     setOffset(circumference);
   };
 
-  useEffect(() => {
-    const total = minutesInput * 60;
-    if (!isRunning) {
-      setTimeLeft(total);
-    }
-  }, [minutesInput, isRunning]);
+  // Изменение минут
+  const increment = () => setMinutesInput((prev) => Math.min(prev + 1, 99));
+  const decrement = () => setMinutesInput((prev) => Math.max(prev - 1, 0));
 
+  // Обновление прогресса круга
   useEffect(() => {
     const total = minutesInput * 60;
     const progress = total === 0 ? 0 : timeLeft / total;
     setOffset(circumference * (1 - progress));
   }, [timeLeft, minutesInput]);
 
-  const increment = () => setMinutesInput((prev) => Math.min(prev + 1, 99));
-  const decrement = () => setMinutesInput((prev) => Math.max(prev - 1, 0));
+  // Если меняем минуты без запуска таймера
+  useEffect(() => {
+    if (!isRunning) {
+      const total = minutesInput * 60;
+      setTimeLeft(total);
+      setOffset(circumference);
+    }
+  }, [minutesInput, isRunning]);
 
   return (
     <div className={`timer-container ${isRunning ? "running" : ""}`}>
       <h1 className="fade-in">Таймер обратного отсчета</h1>
 
       <div className="minute-input fade-in">
-        <button onClick={decrement} disabled={isRunning}>
-          -
-        </button>
+        <button onClick={decrement} disabled={isRunning}>-</button>
         <span>{minutesInput} мин</span>
-        <button onClick={increment} disabled={isRunning}>
-          +
-        </button>
+        <button onClick={increment} disabled={isRunning}>+</button>
       </div>
 
-      <div className="timer-circle fade-in">
+      <div className={`timer-circle fade-in ${timeLeft === 0 ? "finished" : ""}`}>
         <svg height={220} width={220}>
           <defs>
             <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -80,6 +82,7 @@ const CountdownTimer = () => {
               <stop offset="100%" stopColor="#a78bfa" />
             </linearGradient>
           </defs>
+
           <circle
             stroke="#e6ebf2"
             fill="transparent"
@@ -88,6 +91,7 @@ const CountdownTimer = () => {
             cx={110}
             cy={110}
           />
+
           <circle
             className="progress"
             stroke="url(#gradient)"
@@ -101,6 +105,7 @@ const CountdownTimer = () => {
             strokeLinecap="round"
           />
         </svg>
+
         <div className="timer-time">{formatTime(timeLeft)}</div>
         <div className={`spinner ${isRunning ? "active" : ""}`}></div>
       </div>

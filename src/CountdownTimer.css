@@ -1,61 +1,53 @@
+:root {
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  background: #f4f6fb;
+  color: #1a1d23;
+}
+
 .timer-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  font-family: 'Inter', sans-serif;
+  gap: 24px;
+  padding: 24px;
 }
 
-/* Анимация появления */
-.fade-in {
-  animation: fadeIn 0.5s ease forwards;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Инпут минут */
-.minute-input {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #eef2ff;
-  padding: 8px 12px;
-  border-radius: 12px;
-}
-
-.minute-input button {
-  background: #4f46e5;
-  color: #fff;
-  border: none;
-  font-size: 1.2rem;
-  font-weight: 700;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: transform 0.15s ease, background 0.2s ease;
-}
-
-.minute-input button:hover {
-  background: #60a5fa;
-  transform: scale(1.1);
-}
-
-.minute-input button:active {
-  background: #3b82f6;
-}
-
-.minute-input span {
-  font-size: 1.5rem;
-  font-weight: 600;
-  width: 60px;
+h1 {
+  font-size: 28px;
+  margin: 0;
   text-align: center;
 }
 
-/* Таймер-круг */
+.fade-in {
+  animation: fade-in 0.5s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.minute-input {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.minute-input button {
+  padding: 8px 16px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: 1px solid #d0d7e2;
+  background: #eef2ff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.minute-input button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .timer-circle {
   position: relative;
   width: 220px;
@@ -67,7 +59,7 @@
 }
 
 .timer-circle circle.progress {
-  transition: stroke-dashoffset 0.4s linear;
+  transition: stroke-dashoffset 0.5s ease-out;
 }
 
 .timer-time {
@@ -75,24 +67,23 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 2.5rem;
+  font-size: 40px;
   font-weight: 700;
-  color: #4f46e5;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-/* Спиннер */
 .spinner {
-  position: absolute;
-  bottom: -30px;
   width: 24px;
   height: 24px;
   border: 3px solid #c7d2fe;
   border-top-color: #4f46e5;
   border-radius: 50%;
   opacity: 0;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
   animation: spin 1s linear infinite;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.2s ease;
 }
 
 .spinner.active {
@@ -100,42 +91,55 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to { transform: translateX(-50%) rotate(360deg); }
 }
 
-/* Кнопки */
 .timer-buttons {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
-.timer-buttons button {
-  padding: 12px 24px;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  background: #eef2ff;
-  color: #1f2a44;
-  font-weight: 600;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
-}
-
-.timer-buttons button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
-}
-
-.timer-buttons .start-button {
+button.start-button {
   background: #4f46e5;
-  color: #fff;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease;
 }
 
-.timer-buttons .start-button:hover {
-  background: #60a5fa;
+button.start-button:hover {
+  background: #60a5fa; /* голубой при наведении */
 }
 
-.timer-buttons .start-button:active {
+button.start-button:active {
   background: #3b82f6;
-  transform: translateY(0);
-  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.1);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Эффекты окончания таймера */
+.timer-circle.finished circle.progress {
+  animation: blink-circle 1s infinite;
+}
+
+@keyframes blink-circle {
+  0% { stroke-opacity: 1; }
+  50% { stroke-opacity: 0.3; }
+  100% { stroke-opacity: 1; }
+}
+
+.timer-circle.finished .timer-time {
+  animation: blink-text 1s infinite;
+}
+
+@keyframes blink-text {
+  0% { color: #4f46e5; }
+  50% { color: #f87171; }
+  100% { color: #4f46e5; }
 }
